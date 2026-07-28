@@ -1,0 +1,10 @@
+{
+  "id": "wethepeople918/archon-sigilagi-global-cyber-defense-write-up",
+  "title": "Archon SigilAGI: Global Cyber Defense Write-up",
+  "code_file": "archon-sigilagi-writeup.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_internet": true
+}

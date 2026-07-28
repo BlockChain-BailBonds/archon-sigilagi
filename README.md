@@ -30,7 +30,7 @@ Run the global public-threat sentinel:
 python3 -m nap.cli global-watch --interval 900 --db ./global-threats.db
 ```
 
-This continuously monitors the public CISA Known Exploited Vulnerabilities catalog and exposes worldwide alerts at `/api/v1/global/alerts`. It does not probe or modify unrelated systems.
+This continuously monitors the public CISA Known Exploited Vulnerabilities catalog and exposes worldwide alerts at `/api/v1/global/alerts`. GitHub Pages, Kaggle notebooks, and the API use the same committed canonical snapshot at `web/data/alerts.json`; the sentinel refreshes it every five minutes when GitHub Actions is available. It does not probe or modify unrelated systems.
 
 Run the enrolled-tenant guardian loop against a Kubernetes context:
 

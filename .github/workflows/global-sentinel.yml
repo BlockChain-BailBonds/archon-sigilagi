@@ -1,7 +1,7 @@
 name: Archon SigilAGI global sentinel refresh
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 permissions:
   contents: write

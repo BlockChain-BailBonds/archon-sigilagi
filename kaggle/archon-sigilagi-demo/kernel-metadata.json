@@ -1,0 +1,10 @@
+{
+  "id": "wethepeople918/archon-sigilagi-live-containment-demo",
+  "title": "Archon SigilAGI: Live Containment Demo",
+  "code_file": "archon-sigilagi-demo.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_internet": true
+}
