@@ -1,0 +1,20 @@
+[Unit]
+Description=Archon SigilAGI local realtime collector and sync agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/archon-sigilagi
+EnvironmentFile=/etc/archon-sigilagi/agent.env
+ExecStart=/usr/bin/python3 -m nap.cli agent
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/archon-sigilagi
+
+[Install]
+WantedBy=multi-user.target

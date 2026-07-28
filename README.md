@@ -2,6 +2,8 @@
 
 Archon SigilAGI was inspired by the **Neural-Auto-Patch meme**: the idea of an AI guardian that sees emerging threats, plans a rescue, and protects systems. This implementation turns that meme into a policy-bounded defensive platform with real public threat ingestion, signed-by-commit intelligence refreshes, enrolled-tenant correlation, and reversible response boundaries.
 
+To support the full always-on Hugging Face compute version, contact the founder at **founder918tech@gmail.com**.
+
 A policy-bounded autonomous vulnerability-containment MVP. Models may extract claims and propose typed plans; deterministic policy and approved primitive adapters retain production authority.
 
 ## Run locally
@@ -32,6 +34,15 @@ python3 -m nap.cli global-watch --interval 900 --db ./global-threats.db
 
 This continuously monitors the public CISA Known Exploited Vulnerabilities catalog and exposes worldwide alerts at `/api/v1/global/alerts`. GitHub Pages, Kaggle notebooks, and the API use the same committed canonical snapshot at `web/data/alerts.json`; the sentinel refreshes it every five minutes when GitHub Actions is available. It does not probe or modify unrelated systems.
 
+Run the read-only realtime repository demo:
+
+```bash
+python3 -m nap.cli realtime-demo \
+  --asset tenant-gateway:Example Gateway:gateway-api
+```
+
+It fetches and validates the current canonical snapshot from GitHub, reports live threat records, and emits rescue-plan reports only for the enrolled assets supplied on the command line.
+
 Run the enrolled-tenant guardian loop against a Kubernetes context:
 
 ```bash
@@ -49,3 +60,5 @@ Import a real SBOM with `nap import-sbom`, or inventory a real Kubernetes cluste
 Implemented functioning local components: durable SQLite storage, HTTP API, CycloneDX/SPDX import, explicit Kubernetes `kubectl` inventory, hardened HTTPS retrieval, deterministic evidence scoring, approved primitive registry, fail-closed policy, progressive canary with automatic rollback, and hash-chained audit events. Production deployment still requires wiring the organization’s PostgreSQL/object store, OPA, OTel, Cosign/TUF/in-toto, Argo, and cloud/network executor credentials; those must not be faked by a local demo.
 
 Kernel, firmware, bootloader, trust-root, arbitrary shell, package installation, source rewriting, and irreversible data operations are intentionally outside autonomous scope.
+
+The local collector/sync agent is available with `python3 -m nap.cli agent --once` for a single cycle or `python3 -m nap.cli agent` for continuous polling. Configure remote GitHub synchronization with `ARCHON_GITHUB_TOKEN`; the token is never committed.

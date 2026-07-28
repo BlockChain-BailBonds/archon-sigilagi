@@ -8,6 +8,8 @@ from .sbom import assets_from_sbom
 from .threat_feeds import cisa_kev, nvd_cve
 from .guardian import watch
 from .world_guard import watch_public, scan_public_threats
+from .agent import AgentConfig, run as run_agent
+from .realtime_demo import load_snapshot, rescue_report
 
 def main():
     p = argparse.ArgumentParser(prog="nap"); sub = p.add_subparsers(dest="command", required=True)
@@ -20,6 +22,8 @@ def main():
     guardian = sub.add_parser("watch"); guardian.add_argument("--interval", type=int, default=900); guardian.add_argument("--db", default="nap.db"); guardian.add_argument("--kubectl", default="kubectl"); guardian.add_argument("--cisa-url", default=None)
     world = sub.add_parser("global-watch"); world.add_argument("--interval", type=int, default=900); world.add_argument("--db", default="nap.db"); world.add_argument("--cisa-url", default=None)
     global_scan = sub.add_parser("global-scan"); global_scan.add_argument("--db", default="nap.db"); global_scan.add_argument("--cisa-url", default=None); global_scan.add_argument("--output", default=None)
+    agent = sub.add_parser("agent"); agent.add_argument("--once", action="store_true")
+    live = sub.add_parser("realtime-demo"); live.add_argument("--url", default=None); live.add_argument("--asset", action="append", default=[], help="asset_id:component:service")
     args = p.parse_args()
     if args.command == "serve":
         serve(args.host, args.port, args.db); return
@@ -42,8 +46,16 @@ def main():
     if args.command == "global-scan":
         store=Store(args.db); result=scan_public_threats(store, cisa_url=args.cisa_url)
         if args.output:
-            with open(args.output, "w", encoding="utf-8") as handle: json.dump({"updated_at":now(), "alerts":store.list_global_alerts(2000)}, handle, indent=2)
+            with open(args.output, "w", encoding="utf-8") as handle: json.dump({"schema_version":"archon.sigilagi.alerts.v1", "updated_at":now(), "alerts":store.list_global_alerts(2000)}, handle, indent=2)
         print(json.dumps(result, indent=2)); return
+    if args.command == "agent":
+        run_agent(AgentConfig.from_env(), once=args.once); return
+    if args.command == "realtime-demo":
+        snapshot=load_snapshot(args.url) if args.url else load_snapshot()
+        assets=[]
+        for value in args.asset:
+            asset_id, component, service=value.split(":", 2); assets.append({"asset_id":asset_id,"component":component,"service":service})
+        print(json.dumps(rescue_report(snapshot, assets), indent=2)); return
     if args.command == "import-sbom":
         with open(args.path, encoding="utf-8") as handle: payload=json.load(handle)
         store=Store(args.db); assets=assets_from_sbom(payload, environment=args.environment, service=args.service)

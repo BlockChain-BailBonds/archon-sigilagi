@@ -26,3 +26,17 @@ def test_ingest_rejects_non_https():
     try: fetch("http://127.0.0.1:8080/feed")
     except IngestError: pass
     else: assert False
+
+def test_local_agent_writes_atomic_canonical_snapshot(tmp_path, monkeypatch):
+    from nap.agent import AgentConfig, collect_once
+    from nap.models import now
+    def fake_scan(store, cisa_url=None):
+        store.put_global_alert({"claim_id":"clm-test","cve_ids":["CVE-TEST"],"vendor":"Example","product":"Gateway","observed_at":now()})
+        return {"alerts":1,"feed":"fixture"}
+    monkeypatch.setattr("nap.agent.scan_public_threats", fake_scan)
+    config=AgentConfig(db_path=str(tmp_path/"agent.db"), snapshot_path=str(tmp_path/"web/data/alerts.json"), github_token=None)
+    result=collect_once(config)
+    assert result["remote_synced"] is False
+    payload=json.loads((tmp_path/"web/data/alerts.json").read_text())
+    assert payload["schema_version"] == "archon.sigilagi.alerts.v1"
+    assert payload["alerts"][0]["cve_ids"] == ["CVE-TEST"]

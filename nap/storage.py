@@ -72,6 +72,7 @@ class Store:
     def put_global_alert(self, alert: dict[str, Any]) -> None:
         cve_key=",".join(sorted(alert.get("cve_ids", []))) or alert["claim_id"]
         with self._write_lock:
+            self.db.execute("DELETE FROM global_alerts WHERE cve_key = ?", (cve_key,))
             self.db.execute("INSERT INTO global_alerts(cve_key, alert_json, created_at) VALUES (?, ?, ?)", (cve_key, json.dumps(alert, sort_keys=True), alert["observed_at"])); self.db.commit()
 
     def list_global_alerts(self, limit: int = 1000):
