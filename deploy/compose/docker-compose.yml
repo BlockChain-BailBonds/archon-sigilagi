@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: nap
+      POSTGRES_USER: nap
+      POSTGRES_PASSWORD: change-me-in-local-only
+    ports: ["5432:5432"]
+  opa:
+    image: openpolicyagent/opa:latest
+    command: ["run", "--server", "/policies"]
+    volumes: ["../../policies:/policies:ro"]
+    ports: ["8181:8181"]

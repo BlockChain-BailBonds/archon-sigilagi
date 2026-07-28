@@ -1,0 +1,27 @@
+name: Deploy Archon SigilAGI to Hugging Face Space
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: [web/**]
+jobs:
+  deploy:
+    if: ${{ vars.HF_SPACE_ID != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.HF_SPACE_ID }}
+          token: ${{ secrets.HF_TOKEN }}
+          path: hf-space
+      - name: Synchronize backend into Space checkout
+        run: |
+          rsync -a --delete --exclude '.git' --exclude 'web' --exclude 'tests' ./ hf-space/
+          cp README-HF.md hf-space/README.md
+          cd hf-space
+          git config user.name 'Archon SigilAGI Deploy'
+          git config user.email 'actions@users.noreply.github.com'
+          git add .
+          git diff --cached --quiet || git commit -m "Deploy Archon SigilAGI backend"
+          git push
