@@ -16,3 +16,7 @@ Configure an attached persistent volume at `/data`, then set `NAP_DB_PATH=/data/
 The container starts both the API and the continuous global CISA KEV sentinel. Set `ARCHON_SCAN_INTERVAL` to control the refresh interval in seconds.
 
 For donations or compute sponsorship to operate the full always-on Hugging Face version, contact the founder: **founder918tech@gmail.com**.
+
+Live dashboard: https://blockchain-bailbonds.github.io/archon-sigilagi/
+
+Source and realtime canonical feed: https://github.com/BlockChain-BailBonds/archon-sigilagi

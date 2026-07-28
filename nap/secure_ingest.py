@@ -30,7 +30,7 @@ def fetch(url: str, *, max_bytes: int = 2_000_000, timeout: tuple[float, float] 
         raise IngestError("only HTTPS URLs with a hostname are accepted")
     _public_host(parsed.hostname)
     try:
-        response = requests.get(url, timeout=timeout, stream=True, allow_redirects=False, headers={"Accept": ", ".join(allowed_types), "User-Agent": "neural-auto-patch/0.1"})
+        response = requests.get(url, timeout=timeout, stream=True, allow_redirects=False, headers={"Accept": ", ".join(allowed_types), "User-Agent": "archon-sigilagi/0.1", "Cache-Control": "no-cache", "Pragma": "no-cache"})
         response.raise_for_status()
         content_type = response.headers.get("content-type", "application/octet-stream").split(";", 1)[0].lower()
         if content_type not in allowed_types:
@@ -46,4 +46,3 @@ def fetch(url: str, *, max_bytes: int = 2_000_000, timeout: tuple[float, float] 
         raise IngestError(str(exc)) from exc
     body = b"".join(chunks)
     return RetrievedArtifact(url, content_type, body, hashlib.sha256(body).hexdigest())
-
