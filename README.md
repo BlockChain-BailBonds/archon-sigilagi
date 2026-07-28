@@ -1,4 +1,6 @@
-# Neural-Auto-Patch
+# Archon SigilAGI
+
+Archon SigilAGI was inspired by the **Neural-Auto-Patch meme**: the idea of an AI guardian that sees emerging threats, plans a rescue, and protects systems. This implementation turns that meme into a policy-bounded defensive platform with real public threat ingestion, signed-by-commit intelligence refreshes, enrolled-tenant correlation, and reversible response boundaries.
 
 A policy-bounded autonomous vulnerability-containment MVP. Models may extract claims and propose typed plans; deterministic policy and approved primitive adapters retain production authority.
 
