@@ -19,7 +19,7 @@ def main():
     nvd = sub.add_parser("fetch-nvd"); nvd.add_argument("cve_id")
     guardian = sub.add_parser("watch"); guardian.add_argument("--interval", type=int, default=900); guardian.add_argument("--db", default="nap.db"); guardian.add_argument("--kubectl", default="kubectl"); guardian.add_argument("--cisa-url", default=None)
     world = sub.add_parser("global-watch"); world.add_argument("--interval", type=int, default=900); world.add_argument("--db", default="nap.db"); world.add_argument("--cisa-url", default=None)
-    global_scan = sub.add_parser("global-scan"); global_scan.add_argument("--db", default="nap.db"); global_scan.add_argument("--cisa-url", default=None)
+    global_scan = sub.add_parser("global-scan"); global_scan.add_argument("--db", default="nap.db"); global_scan.add_argument("--cisa-url", default=None); global_scan.add_argument("--output", default=None)
     args = p.parse_args()
     if args.command == "serve":
         serve(args.host, args.port, args.db); return
@@ -40,7 +40,10 @@ def main():
     if args.command == "global-watch":
         watch_public(Store(args.db), interval_seconds=args.interval, cisa_url=args.cisa_url); return
     if args.command == "global-scan":
-        print(json.dumps(scan_public_threats(Store(args.db), cisa_url=args.cisa_url), indent=2)); return
+        store=Store(args.db); result=scan_public_threats(store, cisa_url=args.cisa_url)
+        if args.output:
+            with open(args.output, "w", encoding="utf-8") as handle: json.dump({"updated_at":now(), "alerts":store.list_global_alerts(2000)}, handle, indent=2)
+        print(json.dumps(result, indent=2)); return
     if args.command == "import-sbom":
         with open(args.path, encoding="utf-8") as handle: payload=json.load(handle)
         store=Store(args.db); assets=assets_from_sbom(payload, environment=args.environment, service=args.service)
